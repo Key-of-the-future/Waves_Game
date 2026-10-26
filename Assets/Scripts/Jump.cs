@@ -3,12 +3,13 @@ using UnityEngine.InputSystem;
 
 public class Jump : MonoBehaviour
 {
-    public
-    InputActionAsset inputActionAsset;
-    InputAction jumpAction;
+    public InputActionAsset inputActionAsset;
+    public AudioSource jumpSound;         
+    public float fuerzaSalto = 1000f;       
+    public float distanciaSuelo = 1.1f;    
 
-    //Variable para audio source
-    public AudioSource jumpSound;
+    private InputAction jumpAction;
+    private Rigidbody rb;
 
     private void OnEnable()
     {
@@ -20,19 +21,41 @@ public class Jump : MonoBehaviour
         inputActionAsset.FindActionMap("Player").Disable();
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         jumpAction = inputActionAsset.FindActionMap("Player").FindAction("Jump");
+        rb = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-    if (jumpAction.WasPerformedThisFrame())
+        // si la partida termino, ya no se salta
+        if (GameManager.Instance != null && GameManager.Instance.PartidaTerminada) return;
+
+        // solo salta si se presiono el boton Y hay suelo debajo
+        if (jumpAction.WasPerformedThisFrame() && EstaEnElSuelo())
         {
-            gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * 200f);
-            jumpSound.Play();
+            rb.AddForce(Vector3.up * fuerzaSalto);
+            if (jumpSound != null)
+            {
+                jumpSound.Play();
+            }
         }
+
+        
+        Debug.DrawRay(transform.position, Vector3.down * distanciaSuelo, Color.green);
+    }
+
+    bool EstaEnElSuelo()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, distanciaSuelo))
+        {
+            if (!hit.collider.isTrigger)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

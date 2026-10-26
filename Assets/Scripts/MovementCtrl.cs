@@ -13,14 +13,16 @@ public class MovementCtrl : MonoBehaviour
     private InputAction _look;
     private Rigidbody _rb;
 
-    private float _pitch = 0f;
-    private float _pitchLimit = 80f;
+    private float _pitch = 0f;          // cuanto esta inclinada la camara hacia arriba o abajo
+    private float _pitchLimit = 80f;    // limite para que la camara no de la vuelta
 
     void Start()
     {
         _inputActionMap = inputActionAsset.FindActionMap("Player");
         _move = _inputActionMap.FindAction("Move");
         _look = _inputActionMap.FindAction("Look");
+        _inputActionMap.Enable();
+
         _rb = GetComponent<Rigidbody>();
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -28,23 +30,26 @@ public class MovementCtrl : MonoBehaviour
 
     void Update()
     {
-        // MIRAR: horizontal gira al personaje, vertical solo la cámara
+        // si la partida termino, ya no se mueve la camara
+        if (GameManager.Instance != null && GameManager.Instance.PartidaTerminada) return;
+
         Vector2 look = _look.ReadValue<Vector2>();
 
         transform.Rotate(Vector3.up * look.x * sensibilidad);
 
-        _pitch -= look.y * sensibilidad;
+        _pitch = _pitch - look.y * sensibilidad;
         _pitch = Mathf.Clamp(_pitch, -_pitchLimit, _pitchLimit);
         camara.transform.localRotation = Quaternion.Euler(_pitch, 0, 0);
     }
 
     void FixedUpdate()
     {
-        // MOVER con la física, relativo hacia donde mira el personaje
         Vector2 input = _move.ReadValue<Vector2>();
-        Vector3 direccion = transform.TransformDirection(new Vector3(input.x, 0, input.y)) * velocidad;
 
-        // conserva la velocidad vertical (gravedad y salto)
-        _rb.linearVelocity = new Vector3(direccion.x, _rb.linearVelocity.y, direccion.z);
+        Vector3 direccion = transform.right * input.x + transform.forward * input.y;
+
+        // se cambia solo la velocidad horizontal; la vertical se deja para la gravedad y el salto
+        Vector3 velocidadActual = _rb.linearVelocity;
+        _rb.linearVelocity = new Vector3(direccion.x * velocidad, velocidadActual.y, direccion.z * velocidad);
     }
 }

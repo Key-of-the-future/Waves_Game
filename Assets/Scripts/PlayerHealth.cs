@@ -1,44 +1,58 @@
-using System.Collections;
-using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public int vidaMaxima = 100;
-    public TMP_Text textoVida;
-    public TMP_Text textoMensaje;     // texto grande al centro, vacío al inicio
+    public int corazonesMaximos = 10;
+    public AudioSource sonidoDanio;      // sonido al recibir un golpe
 
-    private int vida;
-    private bool muerto;
+    private int corazones;
+    private bool muerto = false;
 
     void Start()
     {
-        vida = vidaMaxima;
-        textoMensaje.text = "";
+        corazones = corazonesMaximos;
         ActualizarUI();
     }
 
+    // los enemigos la llaman cuando golpean al jugador
     public void RecibirDanio(int cantidad)
     {
         if (muerto) return;
 
-        vida = Mathf.Max(vida - cantidad, 0);
+        corazones = corazones - cantidad;
+        if (corazones < 0)
+        {
+            corazones = 0;
+        }
         ActualizarUI();
 
-        if (vida == 0) StartCoroutine(Morir());
+        if (sonidoDanio != null)
+        {
+            sonidoDanio.Play();
+        }
+
+        if (corazones == 0)
+        {
+            Morir();
+        }
     }
 
     void ActualizarUI()
     {
-        textoVida.text = "Vida: " + vida;
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.ActualizarVida(corazones, corazonesMaximos);
+        }
     }
 
-    IEnumerator Morir()
+    void Morir()
     {
         muerto = true;
-        textoMensaje.text = "GAME OVER";
-        yield return new WaitForSeconds(2f);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+        // le avisa al GameManager que se perdio la partida
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.Derrota();
+        }
     }
 }

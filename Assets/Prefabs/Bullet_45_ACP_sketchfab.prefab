@@ -58,9 +58,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 722d858459c403741ad4f71226b29cd1, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -8405642454938280064}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 722d858459c403741ad4f71226b29cd1, type: 3}
-      insertIndex: -1
       addedObject: {fileID: -7731104148771557967}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 722d858459c403741ad4f71226b29cd1, type: 3}
       insertIndex: -1
@@ -71,20 +68,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 722d858459c403741ad4f71226b29cd1, type: 3}
   m_PrefabInstance: {fileID: 7258217573589657755}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &-8405642454938280064
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7528672485160654282}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a38be0a898bdfb459ee0a25583b9b4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BulletCtrl
-  tiempoVida: 2
-  danio: 1
 --- !u!54 &-7731104148771557967
 Rigidbody:
   m_ObjectHideFlags: 0
