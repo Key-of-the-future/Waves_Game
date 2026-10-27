@@ -3,7 +3,10 @@ using UnityEngine;
 public class PlayerHealth : MonoBehaviour
 {
     public int corazonesMaximos = 10;
-    public AudioSource sonidoDanio;      // sonido al recibir un golpe
+    public AudioSource sonidoDanio;    
+
+    private string tagLava = "Lava";         
+    private float alturaMinima = -20f;      
 
     private int corazones;
     private bool muerto = false;
@@ -14,7 +17,32 @@ public class PlayerHealth : MonoBehaviour
         ActualizarUI();
     }
 
-    // los enemigos la llaman cuando golpean al jugador
+    void Update()
+    {
+        // si se cae del mapa, muere
+        if (!muerto && transform.position.y < alturaMinima)
+        {
+            MatarDeGolpe();
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag(tagLava))
+        {
+            MatarDeGolpe();
+        }
+    }
+
+   
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag(tagLava))
+        {
+            MatarDeGolpe();
+        }
+    }
+    
     public void RecibirDanio(int cantidad)
     {
         if (muerto) return;
@@ -35,6 +63,22 @@ public class PlayerHealth : MonoBehaviour
         {
             Morir();
         }
+    }
+
+    // muerte inmediata, sin importar cuantos corazones queden
+    public void MatarDeGolpe()
+    {
+        if (muerto) return;
+
+        corazones = 0;
+        ActualizarUI();
+
+        if (sonidoDanio != null)
+        {
+            sonidoDanio.Play();
+        }
+
+        Morir();
     }
 
     void ActualizarUI()

@@ -65,17 +65,17 @@ public class UIManager : MonoBehaviour
 
     public void ActualizarMunicion(int cargador, int reserva)
     {
-        textoMunicion.text = cargador + " / " + reserva;
+        textoMunicion.text = cargador + "/" + reserva;
     }
 
     public void ActualizarOleada(int oleada, int total, int restantes)
     {
-        textoOleada.text = "Oleada: " + oleada + " / " + total + "\nQuedan: " + restantes;
+        textoOleada.text = "Oleada: " + oleada + " / " + total + "\nEnemigos: " + restantes;
     }
 
     public void ActualizarEliminados(int eliminados)
     {
-        textoEliminados.text = "Eliminados: " + eliminados;
+        textoEliminados.text = "Eliminaciones: " + eliminados;
     }
 
     public void MostrarMensaje(string mensaje, float segundos)
